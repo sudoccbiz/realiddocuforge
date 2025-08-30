@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real ID Barcode Generator</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #ff416c, #ff4b2b);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      padding: 20px;
+    }
+
+    .container {
+      background-color: rgba(0, 0, 0, 0.8);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+      max-width: 800px;
+      width: 100%;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 30px;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      border: 1px solid #fff;
+      background-color: #444;
+      color: white;
+      font-size: 1.1em;
+      transition: 0.3s ease;
+    }
+
+    input:focus, select:focus, button:hover {
+      outline: none;
+      border-color: #ff416c;
+      box-shadow: 0 0 10px rgba(255, 65, 108, 0.6);
+    }
+
+    button {
+      background-color: #ff416c;
+      cursor: pointer;
+      font-size: 1.2em;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #ff4b2b;
+      transform: scale(1.05);
+    }
+
+    #barcode-image {
+      display: block;
+      margin-top: 30px;
+      max-width: 100%;
+      border-radius: 10px;
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.6);
+    }
+
+    .footer {
+      font-size: 1em;
+      color: white;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Real ID Barcode Generator</h1>
+    <form id="barcode-form">
+      <input type="text" id="first-name" placeholder="First Name" required><br>
+      <input type="text" id="middle-name" placeholder="Middle Name (optional)"><br>
+      <input type="text" id="last-name" placeholder="Last Name" required><br>
+      <input type="text" id="document-number" placeholder="Document Number" required><br>
+      <input type="text" id="gender" placeholder="Gender (Male/Female)" required><br>
+      <input type="date" id="dob" placeholder="Date of Birth" required><br>
+      <input type="text" id="address" placeholder="Address" required><br>
+      <input type="text" id="city" placeholder="City" required><br>
+      <input type="text" id="state" placeholder="State Code (e.g., CA)" required><br>
+      <input type="text" id="zip" placeholder="Zip Code" required><br>
+      <input type="text" id="height" placeholder="Height (ft)" required><br>
+      <input type="text" id="weight" placeholder="Weight (lbs)" required><br>
+      <input type="text" id="eye-color" placeholder="Eye Color" required><br>
+      <input type="text" id="hair-color" placeholder="Hair Color" required><br>
+      <input type="date" id="expiry-date" placeholder="Expiration Date" required><br>
+      <input type="text" id="document-discriminator" placeholder="Document Discriminator" required><br>
+      <input type="date" id="issue-date" placeholder="Issue Date" required><br>
+      <select id="document-type">
+        <option value="ID">ID</option>
+        <option value="DL">Driver License</option>
+        <option value="CDL">Commercial Driver License</option>
+      </select><br>
+      <button type="submit">Generate Barcode</button>
+    </form>
+
+    <h2>Generated Barcode:</h2>
+    <img id="barcode-image" src="" alt="Generated Barcode">
+  </div>
+
+  <div class="footer">
+    <p>&copy; 2025 Real ID Barcode Generator</p>
+  </div>
+
+  <script>
+    document.getElementById('barcode-form').addEventListener('submit', async function (event) {
+      event.preventDefault();
+
+      const firstName = document.getElementById('first-name').value;
+      const middleName = document.getElementById('middle-name').value;
+      const lastName = document.getElementById('last-name').value;
+      const documentNumber = document.getElementById('document-number').value;
+      const gender = document.getElementById('gender').value;
+      const dob = document.getElementById('dob').value;
+      const address = document.getElementById('address').value;
+      const city = document.getElementById('city').value;
+      const state = document.getElementById('state').value;
+      const zip = document.getElementById('zip').value;
+      const height = document.getElementById('height').value;
+      const weight = document.getElementById('weight').value;
+      const eyeColor = document.getElementById('eye-color').value;
+      const hairColor = document.getElementById('hair-color').value;
+      const expiryDate = document.getElementById('expiry-date').value;
+      const documentDiscriminator = document.getElementById('document-discriminator').value;
+      const issueDate = document.getElementById('issue-date').value;
+      const documentType = document.getElementById('document-type').value;
+
+      const response = await fetch('/generate-barcode', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          first_name: firstName,
+          middle_name: middleName,
+          last_name: lastName,
+          document_number: documentNumber,
+          gender,
+          dob,
+          address,
+          city,
+          state,
+          zip,
+          height,
+          weight,
+          eye_color: eyeColor,
+          hair_color: hairColor,
+          expiry_date: expiryDate,
+          document_discriminator: documentDiscriminator,
+          issue_date: issueDate,
+          document_type: documentType,
+        }),
+      });
+
+      const blob = await response.blob();
+      const imageUrl = URL.createObjectURL(blob);
+      document.getElementById('barcode-image').src = imageUrl;
+    });
+  </script>
+
+</body>
+</html>
